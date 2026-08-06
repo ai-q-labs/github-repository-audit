@@ -1,0 +1,19 @@
+{
+    "name": "github-repository-audit",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "Audits GitHub repositories against what the package registry says about them: repos that were moved or archived without the registry noticing, licences that changed after you installed the package, and dependencies nobody has pushed to in years.",
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "dependencies": {
+        "apify": "^3.7.0"
+    },
+    "scripts": {
+        "start": "node src/main.js",
+        "test": "node --test test/unit.test.mjs",
+        "test:live": "node test/live-check.mjs"
+    },
+    "author": "Ai-Q Labs",
+    "license": "ISC"
+}
