@@ -1,0 +1,230 @@
+{
+    "$schema": "https://apify.com/schemas/v1/dataset.ide.json",
+    "actorSpecification": 1,
+    "fields": {},
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "input",
+                    "source",
+                    "packageName",
+                    "registry",
+                    "packageVersion",
+                    "riskLevel",
+                    "issueCodes",
+                    "resolvedRepo",
+                    "archived",
+                    "moved",
+                    "daysSinceLastPush",
+                    "repoUrl"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "input": {
+                        "label": "You asked for",
+                        "format": "text"
+                    },
+                    "source": {
+                        "label": "Came from",
+                        "format": "text"
+                    },
+                    "packageName": {
+                        "label": "Package Name",
+                        "format": "text"
+                    },
+                    "registry": {
+                        "label": "Registry",
+                        "format": "text"
+                    },
+                    "packageVersion": {
+                        "label": "Package Version",
+                        "format": "text"
+                    },
+                    "riskLevel": {
+                        "label": "Risk",
+                        "format": "text"
+                    },
+                    "issueCodes": {
+                        "label": "Findings",
+                        "format": "array"
+                    },
+                    "resolvedRepo": {
+                        "label": "Resolved Repo",
+                        "format": "text"
+                    },
+                    "archived": {
+                        "label": "Archived",
+                        "format": "boolean"
+                    },
+                    "moved": {
+                        "label": "Moved",
+                        "format": "boolean"
+                    },
+                    "daysSinceLastPush": {
+                        "label": "Days Since Last Push",
+                        "format": "text"
+                    },
+                    "repoUrl": {
+                        "label": "Repo Url",
+                        "format": "link"
+                    }
+                }
+            }
+        },
+        "problems": {
+            "title": "Problems only",
+            "description": "Rows with at least one finding, including the silent abandonment case",
+            "transformation": {
+                "fields": [
+                    "input",
+                    "source",
+                    "packageName",
+                    "registry",
+                    "riskLevel",
+                    "issues",
+                    "silentAbandonment",
+                    "registryDeprecated",
+                    "archived",
+                    "moved",
+                    "moveKind",
+                    "declaredLicense",
+                    "repoLicenseSpdx",
+                    "repoUrl"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "input": {
+                        "label": "You asked for",
+                        "format": "text"
+                    },
+                    "source": {
+                        "label": "Came from",
+                        "format": "text"
+                    },
+                    "packageName": {
+                        "label": "Package Name",
+                        "format": "text"
+                    },
+                    "registry": {
+                        "label": "Registry",
+                        "format": "text"
+                    },
+                    "riskLevel": {
+                        "label": "Risk",
+                        "format": "text"
+                    },
+                    "issues": {
+                        "label": "What was found",
+                        "format": "array"
+                    },
+                    "silentAbandonment": {
+                        "label": "Silent Abandonment",
+                        "format": "boolean"
+                    },
+                    "registryDeprecated": {
+                        "label": "Registry Deprecated",
+                        "format": "text"
+                    },
+                    "archived": {
+                        "label": "Archived",
+                        "format": "boolean"
+                    },
+                    "moved": {
+                        "label": "Moved",
+                        "format": "boolean"
+                    },
+                    "moveKind": {
+                        "label": "Move Kind",
+                        "format": "text"
+                    },
+                    "declaredLicense": {
+                        "label": "Declared License",
+                        "format": "text"
+                    },
+                    "repoLicenseSpdx": {
+                        "label": "Repo License Spdx",
+                        "format": "text"
+                    },
+                    "repoUrl": {
+                        "label": "Repo Url",
+                        "format": "link"
+                    }
+                }
+            }
+        },
+        "licenses": {
+            "title": "Licences",
+            "description": "What the registry declares against what the repository actually carries",
+            "transformation": {
+                "fields": [
+                    "input",
+                    "source",
+                    "packageName",
+                    "registry",
+                    "declaredLicense",
+                    "declaredLicenseSource",
+                    "repoLicense",
+                    "repoLicenseSpdx",
+                    "repoLicenseNonStandard",
+                    "licenseMatch",
+                    "repoUrl"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "input": {
+                        "label": "Input",
+                        "format": "text"
+                    },
+                    "source": {
+                        "label": "Came From",
+                        "format": "text"
+                    },
+                    "packageName": {
+                        "label": "Package Name",
+                        "format": "text"
+                    },
+                    "registry": {
+                        "label": "Registry",
+                        "format": "text"
+                    },
+                    "declaredLicense": {
+                        "label": "Declared License",
+                        "format": "text"
+                    },
+                    "declaredLicenseSource": {
+                        "label": "Declared License Source",
+                        "format": "text"
+                    },
+                    "repoLicense": {
+                        "label": "Repo License",
+                        "format": "text"
+                    },
+                    "repoLicenseSpdx": {
+                        "label": "Repo License Spdx",
+                        "format": "text"
+                    },
+                    "repoLicenseNonStandard": {
+                        "label": "Repo License Non Standard",
+                        "format": "boolean"
+                    },
+                    "licenseMatch": {
+                        "label": "License Match",
+                        "format": "boolean"
+                    },
+                    "repoUrl": {
+                        "label": "Repo Url",
+                        "format": "link"
+                    }
+                }
+            }
+        }
+    }
+}

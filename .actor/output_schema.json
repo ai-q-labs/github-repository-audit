@@ -1,0 +1,32 @@
+{
+    "$schema": "https://apify.com/schemas/v1/output.ide.json",
+    "actorOutputSchemaVersion": 1,
+    "title": "GitHub repository audit results",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "One row per dependency",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        },
+        "csv": {
+            "type": "string",
+            "title": "Download as CSV",
+            "template": "{{links.apiDefaultDatasetUrl}}/items?format=csv"
+        },
+        "actionList": {
+            "type": "string",
+            "title": "Only what needs fixing",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/ACTION_LIST"
+        },
+        "licenseReport": {
+            "type": "string",
+            "title": "Licence inventory, with unresolved ones named",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/LICENSE_REPORT"
+        },
+        "summary": {
+            "type": "string",
+            "title": "Counts, the GitHub allowance used, and every caveat",
+            "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/SUMMARY"
+        }
+    }
+}

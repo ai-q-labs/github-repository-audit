@@ -1,0 +1,122 @@
+{
+    "title": "GitHub Repository Audit",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "repos": {
+            "title": "Repositories",
+            "type": "array",
+            "description": "GitHub repositories to audit. Any of these forms work: owner/name, https://github.com/owner/name, git+ssh://git@github.com/owner/name.git, github:owner/name. Every output row carries a \"source\" field naming which input it came from, so rows from this list read as source=repos. Nothing is audited that you did not name here, in Packages, or in a manifest. A repository on its own has no registry side, so registryDeprecated, licenseMatch and silentAbandonment come back null on these rows because they could not be checked, not because they came back clean. Give the package name in Packages instead if you need those three.",
+            "editor": "stringList",
+            "prefill": ["facebook/create-react-app", "babel/babel-eslint"]
+        },
+        "packages": {
+            "title": "Packages",
+            "type": "array",
+            "description": "Package names to audit. Prefix with the registry - npm:express, pypi:requests - or leave the prefix off and set the default registry below. Each package is read from its registry, then checked against the repository it points at. Every output row carries a \"source\" field naming which input it came from, so rows from this list read as source=packages.",
+            "editor": "stringList",
+            "prefill": ["npm:request", "npm:babel-eslint", "npm:left-pad"]
+        },
+        "defaultRegistry": {
+            "title": "Default registry",
+            "type": "string",
+            "description": "Which registry to assume for package names given without a prefix.",
+            "editor": "select",
+            "enum": ["npm", "pypi"],
+            "enumTitles": ["npm", "PyPI"],
+            "default": "npm"
+        },
+        "manifestUrl": {
+            "title": "Manifest URL",
+            "type": "string",
+            "description": "A raw package.json, requirements.txt or go.mod to read the dependency list from. Use the raw file URL, not the GitHub page.",
+            "editor": "textfield"
+        },
+        "manifestText": {
+            "title": "Manifest contents",
+            "type": "string",
+            "description": "Paste a package.json, requirements.txt or go.mod here instead of hosting it somewhere. Takes precedence over the manifest URL.",
+            "editor": "textarea"
+        },
+        "manifestType": {
+            "title": "Manifest type",
+            "type": "string",
+            "description": "Leave empty to detect it from the file name and contents. pyproject.toml and lockfiles are not supported - they need a real parser, and half-parsing a manifest produces findings about dependencies you do not have.",
+            "editor": "select",
+            "enum": ["", "package.json", "requirements.txt", "go.mod"],
+            "enumTitles": ["Detect automatically", "package.json (npm)", "requirements.txt (PyPI)", "go.mod (Go)"],
+            "default": ""
+        },
+        "manifestGroups": {
+            "title": "package.json blocks to read",
+            "type": "array",
+            "description": "Which dependency blocks to take from a package.json.",
+            "editor": "select",
+            "items": {
+                "type": "string",
+                "enum": ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"],
+                "enumTitles": ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]
+            },
+            "default": ["dependencies"]
+        },
+        "githubToken": {
+            "title": "GitHub token (optional)",
+            "type": "string",
+            "description": "Without a token GitHub allows 60 requests an hour per IP address, and on shared infrastructure that allowance is shared with other tenants. Any personal access token with no scopes raises it to 5,000 an hour. The token is only sent to api.github.com.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "staleAfterDays": {
+            "title": "Call a repository stale after (days)",
+            "type": "integer",
+            "description": "How long without a pushed commit before a repository is reported as stale. This is a judgement call, so it is reported at medium severity and never used for the archived-but-not-deprecated finding, which relies only on the maintainer's own archive flag.",
+            "default": 365,
+            "minimum": 30,
+            "maximum": 3650,
+            "unit": "days"
+        },
+        "includeContributors": {
+            "title": "Check contributor concentration",
+            "type": "boolean",
+            "description": "Adds one GitHub request per repository and reports what share of commits the single busiest contributor accounts for.",
+            "default": false
+        },
+        "includeReleases": {
+            "title": "Check the last published release",
+            "type": "boolean",
+            "description": "Adds one GitHub request per repository and reports the newest tagged release, which is often years behind the newest commit.",
+            "default": false
+        },
+        "onlyIssues": {
+            "title": "Only output rows with findings",
+            "type": "boolean",
+            "description": "Leaves out the dependencies that came back clean.",
+            "default": false
+        },
+        "maxTargets": {
+            "title": "Maximum entries to audit",
+            "type": "integer",
+            "description": "A ceiling on how many packages or repositories one run will look at.",
+            "default": 200,
+            "minimum": 1,
+            "maximum": 2000
+        },
+        "maxConcurrency": {
+            "title": "Parallel requests",
+            "type": "integer",
+            "description": "Kept low on purpose. Running wider does not buy extra GitHub allowance, and these are other people's servers.",
+            "default": 4,
+            "minimum": 1,
+            "maximum": 10
+        },
+        "requestTimeoutSecs": {
+            "title": "Request timeout",
+            "type": "integer",
+            "description": "How long to wait for any single API response before giving up on it.",
+            "default": 30,
+            "minimum": 5,
+            "maximum": 180,
+            "unit": "seconds"
+        }
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "$schema": "https://apify.com/schemas/v1/actor.ide.json",
+    "actorSpecification": 1,
+    "name": "github-repository-audit",
+    "title": "GitHub Scraper: Archived, Moved & Relicensed Repos",
+    "description": "Checks GitHub repositories against what the package registry claims. Catches what a registry never reports: a package served with no deprecation notice whose repository is archived, a repository that moved owner while requests keep returning 200, and a licence that changed after you installed it.",
+    "version": "0.1",
+    "meta": {
+        "generatedBy": "Claude Code with Claude Opus 5"
+    },
+    "inputSchema": "./input_schema.json",
+    "outputSchema": "./output_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "dockerfile": "../Dockerfile"
+}
