@@ -1,7 +1,386 @@
 {
     "$schema": "https://apify.com/schemas/v1/dataset.ide.json",
     "actorSpecification": 1,
-    "fields": {},
+    "fields": {
+        "title": "Dependency audit row",
+        "description": "One row per dependency that was checked. A fact that could not be established is null, never false and never 0: null means unknown, false means checked and not true.",
+        "type": "object",
+        "properties": {
+            "input": {
+                "title": "Input",
+                "description": "The dependency exactly as it was asked for, before any resolution.",
+                "type": "string",
+                "example": "@babel/code-frame"
+            },
+            "source": {
+                "title": "Where the row came from",
+                "description": "How this dependency entered the run: 'repos' and 'packages' are direct input, 'manifest:<file>' means it was read out of a dependency file in the repository.",
+                "type": "string",
+                "example": "manifest:package.json"
+            },
+            "requestedRepo": {
+                "title": "Repository as requested",
+                "description": "The owner/name coordinate that was looked up, before GitHub applied any rename or transfer. Compare with resolvedRepo to see a move.",
+                "type": ["string", "null"],
+                "example": "babel/babel"
+            },
+            "directory": {
+                "title": "Directory within the repository",
+                "description": "Sub-directory of a monorepo that holds this package, when the input named one. Null for a whole-repository check.",
+                "type": ["string", "null"],
+                "example": null
+            },
+            "dependencyGroup": {
+                "title": "Dependency group",
+                "description": "Which section of the manifest declared this dependency, such as dependencies, devDependencies or peerDependencies. Null when the dependency was named directly rather than read from a manifest.",
+                "type": ["string", "null"],
+                "example": "dependencies"
+            },
+            "declaredSpec": {
+                "title": "Version range as declared",
+                "description": "The version range written in the manifest, not the version that was resolved. Null when the input named no range.",
+                "type": ["string", "null"],
+                "example": "^7.18.6"
+            },
+            "registry": {
+                "title": "Registry",
+                "description": "The package registry the dependency was resolved against.",
+                "type": ["string", "null"],
+                "enum": ["npm", "pypi", null],
+                "example": "npm"
+            },
+            "packageName": {
+                "title": "Package name",
+                "description": "The name under which the registry serves this package. May differ in case or scope from input.",
+                "type": ["string", "null"],
+                "example": "@babel/code-frame"
+            },
+            "packageFound": {
+                "title": "Found on the registry",
+                "description": "True when the registry served a record for this package. Null when no registry lookup was attempted, which is the case for a repository-only check.",
+                "type": ["boolean", "null"],
+                "example": true
+            },
+            "packageVersion": {
+                "title": "Version checked",
+                "description": "The concrete version this row is about. See packageVersionResolvedFrom for whether it was pinned by the input or taken as the latest release.",
+                "type": ["string", "null"],
+                "example": "8.0.0"
+            },
+            "packageVersionResolvedFrom": {
+                "title": "How the version was chosen",
+                "description": "'pinned' when the input named an exact version, 'latest' when the newest published version was used instead.",
+                "type": ["string", "null"],
+                "enum": ["pinned", "latest", null],
+                "example": "latest"
+            },
+            "declaredLicense": {
+                "title": "Licence declared on the registry",
+                "description": "The licence string as the registry publishes it, unnormalised. This is the claim, not the verdict.",
+                "type": ["string", "null"],
+                "example": "MIT"
+            },
+            "declaredLicenseIds": {
+                "title": "Declared licence, as SPDX identifiers",
+                "description": "The declared licence resolved into SPDX identifiers. Empty when the declaration could not be resolved; this is the side of the comparison that licenseMatch uses.",
+                "type": "array",
+                "items": { "type": "string" },
+                "example": ["MIT"]
+            },
+            "declaredLicenseSource": {
+                "title": "Where the declared licence was read from",
+                "description": "Which registry field carried the licence. 'classifiers' means PyPI's trove classifiers; a value ending in '(unresolved)' means text was present but could not be matched to a licence.",
+                "type": ["string", "null"],
+                "enum": ["license", "license_expression", "classifiers", "license (unresolved)", null],
+                "example": "license"
+            },
+            "registryDeprecated": {
+                "title": "Deprecated on the registry",
+                "description": "True when the registry itself marks this package deprecated. This is the maintainer speaking, not an inference from activity.",
+                "type": ["boolean", "null"],
+                "example": false
+            },
+            "registryDeprecationMessage": {
+                "title": "Deprecation message",
+                "description": "The deprecation text the registry serves, when there is one.",
+                "type": ["string", "null"],
+                "example": null
+            },
+            "registryYanked": {
+                "title": "Release yanked",
+                "description": "True when this specific version has been withdrawn from the registry while remaining installable by exact pin.",
+                "type": ["boolean", "null"],
+                "example": null
+            },
+            "registryRepoUrl": {
+                "title": "Repository link published by the registry",
+                "description": "The source repository the registry record points at. The starting point for resolving the repository half of the audit.",
+                "type": ["string", "null"],
+                "example": "https://github.com/babel/babel.git"
+            },
+            "registryRepoDirectory": {
+                "title": "Monorepo directory published by the registry",
+                "description": "Sub-directory inside that repository which the registry attributes this package to.",
+                "type": ["string", "null"],
+                "example": "packages/babel-code-frame"
+            },
+            "knownVulnerabilities": {
+                "title": "Known vulnerability records",
+                "description": "Count of vulnerability records the registry reports for this version. Null when the registry publishes no such count; 0 means it reported none.",
+                "type": ["integer", "null"],
+                "example": null
+            },
+            "repoChecked": {
+                "title": "Repository was looked up",
+                "description": "False when no GitHub lookup happened at all, including when the API allowance ran out. Read this before drawing any conclusion from the repository fields.",
+                "type": "boolean",
+                "example": true
+            },
+            "repoExists": {
+                "title": "Repository exists",
+                "description": "False when GitHub answers 404 for the requested coordinate. Null when the repository was never looked up.",
+                "type": ["boolean", "null"],
+                "example": true
+            },
+            "resolvedRepo": {
+                "title": "Repository after redirects",
+                "description": "The owner/name GitHub actually answers as. Differs from requestedRepo when the repository was renamed or transferred.",
+                "type": ["string", "null"],
+                "example": "babel/babel"
+            },
+            "repoUrl": {
+                "title": "Repository URL",
+                "description": "Canonical GitHub URL of the resolved repository.",
+                "type": ["string", "null"],
+                "example": "https://github.com/babel/babel"
+            },
+            "moved": {
+                "title": "Repository moved",
+                "description": "True when the requested coordinate now redirects elsewhere. GitHub follows the change silently and keeps returning 200, so nothing else signals it.",
+                "type": ["boolean", "null"],
+                "example": false
+            },
+            "moveKind": {
+                "title": "Kind of move",
+                "description": "'renamed' when the same owner changed the repository name, 'transferred' when the owner changed. Null when the repository has not moved.",
+                "type": ["string", "null"],
+                "enum": ["renamed", "transferred", null],
+                "example": null
+            },
+            "archived": {
+                "title": "Archived",
+                "description": "True when the maintainer has archived the repository: read-only, no fixes and no security patches. A declaration, not an inference.",
+                "type": ["boolean", "null"],
+                "example": false
+            },
+            "disabled": {
+                "title": "Disabled by GitHub",
+                "description": "True when GitHub itself has disabled the repository.",
+                "type": ["boolean", "null"],
+                "example": false
+            },
+            "isFork": {
+                "title": "Is a fork",
+                "description": "True when the resolved repository is a fork of another repository.",
+                "type": ["boolean", "null"],
+                "example": false
+            },
+            "parentRepo": {
+                "title": "Upstream repository",
+                "description": "The repository this one was forked from, when it is a fork.",
+                "type": ["string", "null"],
+                "example": null
+            },
+            "pushedAt": {
+                "title": "Last push",
+                "description": "ISO 8601 timestamp of the most recent push to the default branch.",
+                "type": ["string", "null"],
+                "example": "2026-07-31T15:07:05Z"
+            },
+            "daysSinceLastPush": {
+                "title": "Days since last push",
+                "description": "Whole days between the last push and the time of the check. The staleness finding fires above the configured threshold, 365 days by default.",
+                "type": ["integer", "null"],
+                "example": 5
+            },
+            "stars": {
+                "title": "Stars",
+                "description": "GitHub star count at the time of the check. Popularity only; it is used to break ties in the action list and never to decide risk.",
+                "type": ["integer", "null"],
+                "example": 43972
+            },
+            "forks": {
+                "title": "Forks",
+                "description": "GitHub fork count at the time of the check.",
+                "type": ["integer", "null"],
+                "example": 5974
+            },
+            "openIssues": {
+                "title": "Open issues",
+                "description": "Open issue count as GitHub reports it, which includes open pull requests.",
+                "type": ["integer", "null"],
+                "example": 771
+            },
+            "hasIssuesEnabled": {
+                "title": "Issue tracker enabled",
+                "description": "False when the issue tracker is turned off, meaning there is no public channel to report a bug.",
+                "type": ["boolean", "null"],
+                "example": true
+            },
+            "repoLicense": {
+                "title": "Licence in the repository",
+                "description": "The licence GitHub reports for the repository, as an SPDX identifier where it could classify the file and as its display name otherwise.",
+                "type": ["string", "null"],
+                "example": "MIT"
+            },
+            "repoLicenseSpdx": {
+                "title": "Repository licence, SPDX identifier",
+                "description": "The SPDX identifier only. Null when GitHub could not classify the licence file, which is common and not in itself a problem.",
+                "type": ["string", "null"],
+                "example": "MIT"
+            },
+            "repoLicenseNonStandard": {
+                "title": "Licence file not classified",
+                "description": "True when a licence file exists but GitHub cannot match it to a standard licence. Usually an extra paragraph in otherwise ordinary MIT text; reported at low severity for that reason.",
+                "type": ["boolean", "null"],
+                "example": false
+            },
+            "contributorCount": {
+                "title": "Contributors",
+                "description": "Number of contributors GitHub lists. Read together with contributorCountIsCapped before treating it as exact.",
+                "type": ["integer", "null"],
+                "example": null
+            },
+            "contributorCountIsCapped": {
+                "title": "Contributor count is a floor",
+                "description": "True when GitHub's pagination limit was reached, so contributorCount means 'at least this many' rather than an exact total.",
+                "type": ["boolean", "null"],
+                "example": null
+            },
+            "topContributor": {
+                "title": "Most active contributor",
+                "description": "Login of the contributor with the most recorded commits.",
+                "type": ["string", "null"],
+                "example": null
+            },
+            "topContributorShare": {
+                "title": "Share of commits by the top contributor",
+                "description": "Fraction between 0 and 1 of recorded commits attributable to the top contributor. At or above 0.9 by default the single-maintainer finding fires.",
+                "type": ["number", "null"],
+                "example": null
+            },
+            "latestReleaseTag": {
+                "title": "Latest release tag",
+                "description": "Tag of the most recent published release, when the repository publishes releases.",
+                "type": ["string", "null"],
+                "example": null
+            },
+            "latestReleaseAt": {
+                "title": "Latest release date",
+                "description": "ISO 8601 timestamp of the most recent published release.",
+                "type": ["string", "null"],
+                "example": null
+            },
+            "daysSinceLastRelease": {
+                "title": "Days since last release",
+                "description": "Whole days between the most recent release and the time of the check.",
+                "type": ["integer", "null"],
+                "example": null
+            },
+            "licenseMatch": {
+                "title": "Registry and repository agree on the licence",
+                "description": "True when both sides resolve to the same SPDX identifiers, false when they resolve to different ones. Null when either side could not be resolved, in which case no mismatch is claimed.",
+                "type": ["boolean", "null"],
+                "example": true
+            },
+            "silentAbandonment": {
+                "title": "Silent abandonment",
+                "description": "True when the registry still serves the package with no deprecation notice while its repository is archived or disabled. Installing it looks completely normal, which is what makes this the headline finding. Null when either side could not be read.",
+                "type": ["boolean", "null"],
+                "example": false
+            },
+            "riskLevel": {
+                "title": "Risk level",
+                "description": "The severity of the worst finding on this row, or 'ok' when there are none. Sort or filter on this field to triage.",
+                "type": "string",
+                "enum": ["critical", "high", "medium", "low", "ok"],
+                "example": "ok"
+            },
+            "issueCodes": {
+                "title": "Finding codes",
+                "description": "Stable machine-readable codes of every finding on this row, for filtering without parsing prose.",
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "repo_gone",
+                        "repo_archived",
+                        "silent_abandonment",
+                        "license_mismatch",
+                        "release_yanked",
+                        "deprecated_on_registry",
+                        "license_now_source_available",
+                        "known_vulnerabilities",
+                        "repo_moved",
+                        "stale_no_push",
+                        "license_declared_but_absent",
+                        "fork_behind_upstream",
+                        "single_maintainer",
+                        "license_needs_review",
+                        "no_license_file",
+                        "issues_disabled",
+                        "no_repository_link",
+                        "repository_not_on_github",
+                        "not_checked"
+                    ]
+                },
+                "example": ["silent_abandonment"]
+            },
+            "issues": {
+                "title": "Findings",
+                "description": "The findings in full: the same codes as issueCodes, each with its severity and a sentence naming the two facts that produced it.",
+                "type": "array",
+                "example": [
+                    {
+                        "code": "silent_abandonment",
+                        "severity": "critical",
+                        "detail": "npm still serves request@2.88.2 with no deprecation notice, while its repository request/request has been archived. Installing it looks completely normal."
+                    }
+                ],
+                "items": {
+                    "type": "object",
+                    "title": "Finding",
+                    "properties": {
+                        "code": {
+                            "title": "Finding code",
+                            "description": "Stable identifier of the rule that fired.",
+                            "type": "string",
+                            "example": "silent_abandonment"
+                        },
+                        "severity": {
+                            "title": "Severity",
+                            "description": "How serious this finding is on its own. The row's riskLevel is the worst severity present here.",
+                            "type": "string",
+                            "enum": ["critical", "high", "medium", "low"],
+                            "example": "critical"
+                        },
+                        "detail": {
+                            "title": "What was found",
+                            "description": "One sentence naming the two facts that disagree, with the values that produced the finding.",
+                            "type": "string",
+                            "example": "npm still serves request@2.88.2 with no deprecation notice, while its repository request/request has been archived. Installing it looks completely normal."
+                        }
+                    }
+                }
+            },
+            "checkedAt": {
+                "title": "Checked at",
+                "description": "ISO 8601 timestamp of when this row was evaluated. Every other field is a fact as of this moment.",
+                "type": "string",
+                "example": "2026-08-06T05:54:55.133Z"
+            }
+        }
+    },
     "views": {
         "overview": {
             "title": "Overview",
